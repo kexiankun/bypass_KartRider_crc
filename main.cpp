@@ -15,8 +15,6 @@
 #ifndef PEB_LDR_DATA_H
 #define PEB_LDR_DATA_H
 
-#include <Windows.h>
-
 // UNICODE 字符串结构
 typedef struct _UNICODE_STRING {
     USHORT Length;
