@@ -1,3 +1,5 @@
+加密解密对抗CRC，不局限于一种游戏，通用
+
 内存镜像欺骗，DLL劫持
 
 "Memory image deception, DLL hijacking."
