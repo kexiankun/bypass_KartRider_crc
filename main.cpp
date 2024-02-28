@@ -11,6 +11,7 @@
 
 #define CREAZY_ARCADE_VERSION	146
 
+void HookFunction();
 
 #ifndef PEB_LDR_DATA_H
 #define PEB_LDR_DATA_H
@@ -245,4 +246,42 @@ PEB_LDR_DATA* GetPEB_LDR(void* peb) {
         mov eax, [eax + 0xc];
     }
 #endif
+}
+
+
+void HookFunction() {
+    // 在这里执行我们的代码
+    printf("Hooked function called!\n");
+
+    // 调用原始的函数（如果需要）
+    // 这里需要根据实际情况来调用原始函数，可能需要保存和恢复寄存器状态
+}
+
+// Inline Hook 函数
+void inlineHook(void* lpCurBase, void* lpToBase) {
+    // 跳转指令的字节码
+    unsigned char hookCode[5] = { 0xE9 }; // JMP 指令
+
+    // 计算跳转地址
+    int offset = (int)lpToBase - (int)lpCurBase - 5;
+
+    // 将偏移量写入跳转指令
+    hookCode[1] = (offset >> 24) & 0xFF;
+    hookCode[2] = (offset >> 16) & 0xFF;
+    hookCode[3] = (offset >> 8) & 0xFF;
+    hookCode[4] = offset & 0xFF;
+
+    // 写入跳转指令到目标地址
+    SIZE_T bytesWritten;
+    if (!WriteProcessMemory(GetCurrentProcess(), lpCurBase, hookCode, sizeof(hookCode), &bytesWritten)) {
+        printf("Failed to write hook code. Error: %d\n", GetLastError());
+        return;
+    }
+
+    if (bytesWritten != sizeof(hookCode)) {
+        printf("Hook code was not fully written.\n");
+        return;
+    }
+
+    printf("Hook successful.\n");
 }
